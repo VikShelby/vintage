@@ -132,9 +132,7 @@ export default function AddToCartButton({
         {showSuccess ? (
           <motion.div
             key="success"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, rotate: 180 }}
+           
             className="flex items-center gap-2"
           >
             <Check className="w-5 h-5" />
@@ -143,10 +141,7 @@ export default function AddToCartButton({
         ) : (
           <motion.div
             key="add"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1, rotate: isAdding ? 360 : 0 }}
-            exit={{ scale: 0 }}
-            transition={{ duration: isAdding ? 0.6 : 0.2 }}
+          
             className="flex items-center gap-2"
           >
             <ShoppingBag className="w-5 h-5" />

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import ProductCard from "./ProductCard"
+import AnimatedContent from "./AnmateContent"
 
 const collections = {
   "70s Jackets": [
@@ -143,18 +144,15 @@ export default function CuratedCollections({ onProductClick }: CuratedCollection
   return (
     <section className="py-20 bg-ivory">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <div
+          
           className="text-center mb-12"
         >
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-espresso mb-4">Curated Collections</h2>
           <p className="text-lg text-espresso/80 max-w-2xl mx-auto">
             Explore our carefully organized vintage collections by category
           </p>
-        </motion.div>
+        </div>
 
         {/* Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
@@ -176,20 +174,36 @@ export default function CuratedCollections({ onProductClick }: CuratedCollection
         </div>
 
         {/* Products Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
+  <AnimatedContent
+
+  distance={50}
+
+  direction="horizontal"
+
+  reverse={false}
+
+  duration={0.8}
+
+  ease="power3.out"
+
+  initialOpacity={0.2}
+
+  animateOpacity
+
+  scale={1}
+
+  threshold={0.2}
+  delay={0}
+
+>
+          <div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {collections[activeTab as keyof typeof collections].map((product, index) => (
               <ProductCard key={product.id} product={product} onClick={onProductClick} index={index} />
             ))}
-          </motion.div>
-        </AnimatePresence>
+          </div></AnimatedContent>
       </div>
     </section>
   )

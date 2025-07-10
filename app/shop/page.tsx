@@ -25,7 +25,7 @@ const allProducts = [
     category: "Outerwear",
     subcategory: "Jackets",
     era: "1970s",
-    size: ["S", "M", "L"],
+    sizes: ["S", "M", "L"],
     color: "Brown",
     condition: "Excellent",
     isSale: true,
@@ -42,7 +42,7 @@ const allProducts = [
     category: "Bottoms",
     subcategory: "Jeans",
     era: "1980s",
-    size: ["XS", "S", "M", "L", "XL"],
+    sizes: ["XS", "S", "M", "L", "XL"],
     color: "Blue",
     condition: "Very Good",
     isSale: false,
@@ -59,7 +59,7 @@ const allProducts = [
     category: "Tops",
     subcategory: "Blouses",
     era: "1960s",
-    size: ["S", "M", "L"],
+    sizes: ["S", "M", "L"],
     color: "Floral",
     condition: "Excellent",
     isSale: false,
@@ -76,7 +76,7 @@ const allProducts = [
     category: "Outerwear",
     subcategory: "Coats",
     era: "1950s",
-    size: ["S", "M", "L", "XL"],
+    sizes: ["S", "M", "L", "XL"],
     color: "Camel",
     condition: "Excellent",
     isSale: false,
@@ -93,7 +93,7 @@ const allProducts = [
     category: "Dresses",
     subcategory: "Midi Dresses",
     era: "1970s",
-    size: ["XS", "S", "M", "L"],
+    sizes: ["XS", "S", "M", "L"],
     color: "Green",
     condition: "Very Good",
     isSale: false,
@@ -110,7 +110,7 @@ const allProducts = [
     category: "Accessories",
     subcategory: "Eyewear",
     era: "1980s",
-    size: ["One Size"],
+    sizes: ["One sizes"],
     color: "Black",
     condition: "Excellent",
     isSale: false,
@@ -127,7 +127,7 @@ const allProducts = [
     category: "Accessories",
     subcategory: "Scarves",
     era: "1960s",
-    size: ["One Size"],
+    sizes: ["One sizes"],
     color: "Multi",
     condition: "Good",
     isSale: false,
@@ -145,7 +145,7 @@ const allProducts = [
     category: "Bottoms",
     subcategory: "Jeans",
     era: "1970s",
-    size: ["XS", "S", "M", "L", "XL"],
+    sizes: ["XS", "S", "M", "L", "XL"],
     color: "Blue",
     condition: "Very Good",
     isSale: true,
@@ -162,7 +162,7 @@ const allProducts = [
     category: "Dresses",
     subcategory: "Maxi Dresses",
     era: "1970s",
-    size: ["S", "M", "L"],
+    sizes: ["S", "M", "L"],
     color: "Earth Tones",
     condition: "Excellent",
     isSale: false,
@@ -179,7 +179,7 @@ const allProducts = [
     category: "Shoes",
     subcategory: "Boots",
     era: "1980s",
-    size: ["6", "7", "8", "9", "10"],
+    sizes: ["6", "7", "8", "9", "10"],
     color: "Brown",
     condition: "Very Good",
     isSale: false,
@@ -196,7 +196,7 @@ const allProducts = [
     category: "Accessories",
     subcategory: "Jewelry",
     era: "1960s",
-    size: ["One Size"],
+    sizes: ["One sizes"],
     color: "Gold",
     condition: "Excellent",
     isSale: false,
@@ -213,7 +213,7 @@ const allProducts = [
     category: "Outerwear",
     subcategory: "Jackets",
     era: "1970s",
-    size: ["S", "M", "L"],
+    sizes: ["S", "M", "L"],
     color: "Tan",
     condition: "Excellent",
     isSale: false,
@@ -264,8 +264,8 @@ export default function ShopPage() {
         return false
       }
 
-      // Size filter
-      if (filters.sizes.length > 0 && !filters.sizes.some((size) => product.size.includes(size))) {
+      // sizes filter
+      if (filters.sizes.length > 0 && !filters.sizes.some((sizes) => product.sizes.includes(sizes))) {
         return false
       }
 
@@ -363,17 +363,14 @@ export default function ShopPage() {
         <Breadcrumbs />
 
         {/* Page Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
           className="mb-8"
         >
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-espresso mb-4">Shop All</h1>
           <p className="text-lg text-espresso/80">
             Discover our complete collection of carefully curated vintage pieces
           </p>
-        </motion.div>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar */}
@@ -501,9 +498,7 @@ export default function ShopPage() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${viewMode}-${currentPage}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
+                
                 transition={{ duration: 0.4 }}
                 className={
                   viewMode === "grid"

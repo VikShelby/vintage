@@ -27,12 +27,9 @@ interface ProductCardProps {
 export default function ProductCard({ product, onClick, index = 0, viewMode = "grid" }: ProductCardProps) {
   if (viewMode === "list") {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.4, delay: index * 0.05 }}
-        className="group cursor-pointer bg-cream rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex"
+      <div
+       
+        className="group cursor-pointer bg-cream rounded-lg overflow-hidden shadow-sm  transition-all duration-300 flex"
         onClick={() => onClick(product)}
       >
         <div className="relative w-48 flex-shrink-0">
@@ -63,7 +60,7 @@ export default function ProductCard({ product, onClick, index = 0, viewMode = "g
             <p className="text-espresso/70 mb-4 line-clamp-2">{product.description}</p>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between md:flex-row flex-col">
             <div className="flex items-center gap-2">
               <span className="font-bold text-lg text-espresso">{product.price}</span>
               {product.originalPrice && (
@@ -73,19 +70,15 @@ export default function ProductCard({ product, onClick, index = 0, viewMode = "g
             <AddToCartButton product={product} variant="secondary" className="px-4 py-2 text-sm" />
           </div>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
   // Grid view (existing code)
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ y: -10, rotateY: 5 }}
-      className="group cursor-pointer bg-cream rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+    <div
+     
+      className="group cursor-pointer bg-cream rounded-lg overflow-hidden shadow-sm  transition-all duration-300"
       onClick={() => onClick(product)}
     >
       {/* Rest of the existing grid view code remains the same */}
@@ -158,6 +151,6 @@ export default function ProductCard({ product, onClick, index = 0, viewMode = "g
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

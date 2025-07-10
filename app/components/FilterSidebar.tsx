@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface FilterSidebarProps {
   filters: any
@@ -29,7 +30,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
   }
 
   const categories = ["Outerwear", "Tops", "Bottoms", "Dresses", "Shoes", "Accessories"]
-  const sizes = ["XS", "S", "M", "L", "XL", "One Size"]
+  const sizes = ["XS", "S", "M", "L", "XL"]
   const colors = [
     "Black",
     "Brown",
@@ -47,8 +48,8 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
   const eras = ["1950s", "1960s", "1970s", "1980s", "1990s"]
   const conditions = ["Excellent", "Very Good", "Good"]
 
-  const FilterSection = ({ title, isExpanded, onToggle, children }: any) => (
-    <div className="border-b border-espresso/10 pb-6 mb-6">
+  const FilterSection = ({ title, isExpanded, onToggle, children , isW   }: any) => (
+    <div className="border-b border-espresso/10  mb-3 ">
       <motion.button
         className="flex items-center justify-between w-full text-left font-semibold text-espresso mb-4"
         onClick={onToggle}
@@ -61,7 +62,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
         initial={false}
         animate={{ height: isExpanded ? "auto" : 0, opacity: isExpanded ? 1 : 0 }}
         transition={{ duration: 0.3 }}
-        className="overflow-hidden"
+        className={cn("overflow-hidden " , isW && 'mb-4')}
       >
         {children}
       </motion.div>
@@ -89,6 +90,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
       {/* Categories */}
       <FilterSection
         title="Categories"
+        isW={true}
         isExpanded={expandedSections.categories}
         onToggle={() => toggleSection("categories")}
       >
@@ -180,7 +182,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
       </FilterSection>
 
       {/* Sizes */}
-      <FilterSection title="Size" isExpanded={expandedSections.size} onToggle={() => toggleSection("size")}>
+      <FilterSection isW title="Size" isExpanded={expandedSections.size} onToggle={() => toggleSection("size")}>
         <div className="grid grid-cols-3 gap-2">
           {sizes.map((size) => (
             <motion.button
@@ -197,8 +199,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
                   setFilters({ ...filters, sizes: [...filters.sizes, size] })
                 }
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              
             >
               {size}
             </motion.button>
@@ -330,7 +331,7 @@ export default function FilterSidebar({ filters, setFilters, onClearAll }: Filte
       </FilterSection>
 
       {/* Special Filters */}
-      <FilterSection title="Special" isExpanded={expandedSections.special} onToggle={() => toggleSection("special")}>
+      <FilterSection isW title="Special" isExpanded={expandedSections.special} onToggle={() => toggleSection("special")}>
         <div className="space-y-3">
           <label className="flex items-center cursor-pointer group">
             <input

@@ -1,8 +1,6 @@
 "use client"
 
-import { useRef } from "react"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useRef, MouseEvent, useCallback } from "react"
 import ProductCard from "./ProductCard"
 
 const bestSellers = [
@@ -66,63 +64,114 @@ interface BestSellersProps {
 
 export default function BestSellers({ onProductClick }: BestSellersProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  
+  // Refs for drag state
+  const isDown = useRef(false)
+  const hasDragged = useRef(false)
+  const startX = useRef(0)
+  const scrollLeft = useRef(0)
+  
+  // Refs for momentum scrolling
+  const velocity = useRef(0)
+  const animationFrame = useRef<number | null>(null)
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const scrollAmount = 320
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      })
+  // Damping factor for momentum (e.g., 0.95 means 5% slowdown per frame)
+  const DAMPING_FACTOR = 0.95
+
+  const momentumLoop = useCallback(() => {
+    if (!scrollRef.current) return;
+
+    // Apply velocity to scroll position
+    scrollRef.current.scrollLeft += velocity.current
+    
+    // Apply damping to slow down
+    velocity.current *= DAMPING_FACTOR
+    
+    // Continue loop if velocity is significant
+    if (Math.abs(velocity.current) > 0.5) {
+      animationFrame.current = requestAnimationFrame(momentumLoop)
     }
+  }, [])
+
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    if (!scrollRef.current) return
+    isDown.current = true
+    hasDragged.current = false
+    
+    // Stop any existing momentum animation
+    if (animationFrame.current) {
+      cancelAnimationFrame(animationFrame.current)
+    }
+
+    startX.current = e.pageX - scrollRef.current.offsetLeft
+    scrollLeft.current = scrollRef.current.scrollLeft
+    velocity.current = 0
+  }
+
+  const handleMouseLeave = () => {
+    if (!isDown.current) return
+    isDown.current = false
+    if (hasDragged.current) {
+        animationFrame.current = requestAnimationFrame(momentumLoop)
+    }
+  }
+
+  const handleMouseUp = () => {
+    if (!isDown.current) return
+    isDown.current = false
+    if (hasDragged.current) {
+      animationFrame.current = requestAnimationFrame(momentumLoop)
+    }
+  }
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!isDown.current || !scrollRef.current) return
+    e.preventDefault()
+    hasDragged.current = true
+
+    const x = e.pageX - scrollRef.current.offsetLeft
+    const walk = (x - startX.current)
+    
+    // Update scroll position and calculate new velocity
+    const newScrollLeft = scrollLeft.current - walk
+    velocity.current = newScrollLeft - scrollRef.current.scrollLeft
+    scrollRef.current.scrollLeft = newScrollLeft
   }
 
   return (
     <section className="py-20 bg-ivory">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-espresso mb-4">Best Sellers</h2>
           <p className="text-lg text-espresso/80 max-w-2xl mx-auto">
             Our most loved pieces, chosen by customers who appreciate timeless style
           </p>
-        </motion.div>
+        </div>
 
         <div className="relative">
-          {/* Navigation Buttons */}
-          <motion.button
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-ivory shadow-lg p-3 rounded-full hover:bg-cream transition-colors z-10"
-            onClick={() => scroll("left")}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-6 h-6 text-espresso" />
-          </motion.button>
-          <motion.button
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-ivory shadow-lg p-3 rounded-full hover:bg-cream transition-colors z-10"
-            onClick={() => scroll("right")}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-6 h-6 text-espresso" />
-          </motion.button>
-
-          {/* Products Carousel */}
           <div
             ref={scrollRef}
-            className="flex gap-6 overflow-x-auto hide-scrollbar pb-4"
-            style={{ scrollSnapType: "x mandatory" }}
+            className="flex gap-6 overflow-x-auto hide-scrollbar pb-4 cursor-grab active:cursor-grabbing"
+            style={{ scrollSnapType: 'none', userSelect: "none" }} // scroll-snap interferes with momentum
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
           >
             {bestSellers.map((product, index) => (
-              <div key={product.id} className="flex-none w-80" style={{ scrollSnapAlign: "start" }}>
-                <ProductCard product={product} onClick={onProductClick} index={index} />
+              <div
+                key={product.id}
+                className="flex-none w-full md:w-80"
+                // The onClick logic is crucial to distinguish a drag from a click
+                onClick={(e) => {
+                  if (hasDragged.current) {
+                    e.preventDefault() // Prevent click if it was a drag
+                    return;
+                  }
+                  onProductClick(product)
+                }}
+              >
+                <ProductCard onClick={onProductClick} product={product} index={index} />
               </div>
             ))}
           </div>
